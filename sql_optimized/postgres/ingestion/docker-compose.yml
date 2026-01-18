@@ -1,0 +1,17 @@
+services:
+  openaq-postgres:
+    image: postgres:15
+    container_name: openaq-postgres
+    environment:
+      POSTGRES_USER: openaq
+      POSTGRES_PASSWORD: openaq
+      POSTGRES_DB: openaq
+    ports:
+      - "5432:5432"
+    volumes:
+      - openaq_pgdata:/var/lib/postgresql/data
+
+volumes:
+  openaq_pgdata:
+
+#docker compose up -d

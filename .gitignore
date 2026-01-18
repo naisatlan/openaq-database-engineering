@@ -1,15 +1,16 @@
-# Secrets
-.env
-**/.env
-
-# Python
-**/__pycache__/
-**/*.pyc
-
-# IDE
-.idea/
-.vscode/
-
-# OS
+#Python
+__pycache__/
+.venv/
+*.log
+*.tmp
+*.bak
 .DS_Store
 Thumbs.db
+.vscode/
+env/
+
+#Java
+.gradle
+build
+.kotlin
+out/

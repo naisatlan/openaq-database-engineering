@@ -1,6 +1,12 @@
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+
 from api.openaq_api import fetch_locations, fetch_sensors, fetch_measurements
 from transform.normalizer import normalize_measurements
 from database.mongo_writer import write_locations, write_sensors, write_measurements
+from benchmark.timer import timer
 
 
 def run_pipeline(max_locations=30):
@@ -30,4 +36,7 @@ def run_pipeline(max_locations=30):
 
 
 if __name__ == "__main__":
-    run_pipeline()
+    bench = {}
+    with timer("ingestion time", bench):
+        run_pipeline()
+    print(bench)

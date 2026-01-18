@@ -5,12 +5,16 @@ package org.example;
 import org.example.HibernateUtil;
 import org.hibernate.Session;
 import java.util.List;
+import java.util.Map;
+import java.util.LinkedHashMap;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class App {
+    static Map<String, Double> queryTimings = new LinkedHashMap<>();
+
     public String getGreeting() {
         return "Hello World!";
     }
@@ -26,12 +30,23 @@ public class App {
             exportDailyAvgByCity(session);
 
             System.out.println("All CSV exported successfully.");
+            printQueryTimings();
         }
 
         HibernateUtil.getSessionFactory().close();
     }
+
+    static void printQueryTimings() {
+        System.out.println("\nQuery execution times (milliseconds):");
+        for (Map.Entry<String, Double> entry : queryTimings.entrySet()) {
+            System.out.printf("  %s: %.2f ms%n", entry.getKey(), entry.getValue());
+        }
+    }
+
 //Average PM10 values by city
     static void exportAvgByCity(Session session) throws IOException {
+        long startTime = System.currentTimeMillis();
+        
         var q = session.createQuery("""
         SELECT l.city, AVG(m.value)
         FROM Location l
@@ -41,11 +56,17 @@ public class App {
         ORDER BY AVG(m.value) DESC
         """, Object[].class);
 
-        writeCsv("avg_by_city.csv", q.getResultList(),
+        List<Object[]> results = q.getResultList();
+        long endTime = System.currentTimeMillis();
+        queryTimings.put("avg_by_city", (double)(endTime - startTime));
+
+        writeCsv("avg_by_city.csv", results,
                 "city,avg_value");
     }
 //Monthly trend of PM10 values
     static void exportMonthlyTrend(Session session) throws IOException {
+        long startTime = System.currentTimeMillis();
+        
         var q = session.createQuery("""
             SELECT EXTRACT(MONTH FROM m.timestamp), AVG(m.value)
             FROM Measurement m
@@ -53,12 +74,17 @@ public class App {
             ORDER BY EXTRACT(MONTH FROM m.timestamp)
         """, Object[].class);
 
-        writeCsv("monthly_trend_pm10.csv", q.getResultList(),
+        List<Object[]> results = q.getResultList();
+        long endTime = System.currentTimeMillis();
+        queryTimings.put("monthly_trend_pm10", (double)(endTime - startTime));
+
+        writeCsv("monthly_trend_pm10.csv", results,
                 "month,avg_value");
     }
 //Top 10 cities with highest average PM10
     static void exportTopPollutedCities(Session session) throws IOException {
-
+        long startTime = System.currentTimeMillis();
+        
         var q = session.createQuery("""
             SELECT l.city, AVG(m.value)
             FROM Location l
@@ -68,12 +94,18 @@ public class App {
             ORDER BY AVG(m.value) DESC
         """, Object[].class).setMaxResults(10);
 
+        List<Object[]> results = q.getResultList();
+        long endTime = System.currentTimeMillis();
+        queryTimings.put("top_polluted_cities", (double)(endTime - startTime));
+
         writeCsv("top10_polluted_cities.csv",
-                q.getResultList(),
+                results,
                 "city,avg_pm10");
     }
 //PM10 comparison between Santiago and Rotterdam
     static void exportCityComparison(Session session) throws IOException {
+        long startTime = System.currentTimeMillis();
+        
         var q = session.createQuery("""
             SELECT l.city, AVG(m.value)
             FROM Location l
@@ -83,11 +115,17 @@ public class App {
             GROUP BY l.city
         """, Object[].class);
 
-        writeCsv("city_comparison.csv", q.getResultList(),
+        List<Object[]> results = q.getResultList();
+        long endTime = System.currentTimeMillis();
+        queryTimings.put("city_comparison", (double)(endTime - startTime));
+
+        writeCsv("city_comparison.csv", results,
                 "city,avg_value");
     }
 //Daily average PM10 values by city
     static void exportDailyAvgByCity(Session session) throws IOException {
+        long startTime = System.currentTimeMillis();
+        
         var q = session.createQuery("""
         SELECT l.city, DATE(m.timestamp), AVG(m.value)
         FROM Location l
@@ -97,7 +135,11 @@ public class App {
         ORDER BY l.city, DATE(m.timestamp)
         """, Object[].class);
 
-        writeCsv("daily_avg_city.csv", q.getResultList(),
+        List<Object[]> results = q.getResultList();
+        long endTime = System.currentTimeMillis();
+        queryTimings.put("daily_avg_by_city", (double)(endTime - startTime));
+
+        writeCsv("daily_avg_city.csv", results,
                 "city,day,avg_value");
     }
 

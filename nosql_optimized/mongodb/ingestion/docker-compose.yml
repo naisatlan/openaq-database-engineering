@@ -1,0 +1,17 @@
+services:
+  openaq-mongo-nosql:
+    image: mongo:4.4
+    container_name: openaq-mongo-nosql
+    ports:
+      - "27018:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: openaq
+      MONGO_INITDB_ROOT_PASSWORD: openaq
+    volumes:
+      - openaq_mongo_nosql_data:/data/db
+    command: ["mongod", "--auth"]
+
+volumes:
+  openaq_mongo_nosql_data:
+
+#docker compose up -d

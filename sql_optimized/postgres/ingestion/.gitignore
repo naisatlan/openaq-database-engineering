@@ -1,9 +1,0 @@
-__pycache__/
-.venv/
-*.log
-*.tmp
-*.bak
-.DS_Store
-Thumbs.db
-.vscode/
-env/

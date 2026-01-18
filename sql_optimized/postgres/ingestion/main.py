@@ -1,6 +1,7 @@
 from api.openaq_api import fetch_locations, fetch_sensors, fetch_measurements
 from transform.normalizer import normalize_measurements
 from database.postgres_writer import write_locations, write_sensors, write_measurements
+from benchmark.timer import timer
 
 
 def run_pipeline(
@@ -43,4 +44,7 @@ def run_pipeline(
 
 
 if __name__ == "__main__":
-    run_pipeline()
+    bench = {}
+    with timer("ingestion time", bench):
+        run_pipeline()
+    print(bench)

@@ -1,0 +1,12 @@
+services:
+  openaq-mongo:
+    image: mongo:4.4
+    container_name: openaq-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - openaq_mongo_data:/data/db
+
+volumes:
+  openaq_mongo_data:
+#docker compose up -d

@@ -1,0 +1,15 @@
+services:
+  openaq-postgres-nosql:
+    image: postgres:15
+    container_name: openaq-postgres-nosql
+    environment:
+      POSTGRES_USER: openaq
+      POSTGRES_PASSWORD: openaq
+      POSTGRES_DB: openaq_nosql
+    ports:
+      - "5434:5432"
+    volumes:
+      - openaq_pgdata_nosql:/var/lib/postgresql/data
+
+volumes:
+  openaq_pgdata_nosql:
