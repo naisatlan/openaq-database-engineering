@@ -24,12 +24,16 @@ dependencies {
     implementation 'jakarta.persistence:jakarta.persistence-api:3.1.0'
 }
 
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
+}
+
 testing {
     suites {
         // Configure the built-in test suite
         test {
-            // Use JUnit4 test framework
-            useJUnit('4.13.2')
+            // Use JUnit5 test framework
+            useJUnitJupiter('5.9.2')
         }
     }
 }

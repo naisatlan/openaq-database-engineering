@@ -3,12 +3,193 @@
  */
 package org.example;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.example.entity.Location;
+import org.example.entity.Measurement;
+import org.example.entity.Sensor;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+@DisplayName("App Tests")
 public class AppTest {
-    @Test public void appHasAGreeting() {
+    @Test
+    @DisplayName("app should have a greeting")
+    public void appHasAGreeting() {
         App classUnderTest = new App();
-        assertNotNull("app should have a greeting", classUnderTest.getGreeting());
+        assertNotNull(classUnderTest.getGreeting());
+    }
+}
+
+@DisplayName("HibernateUtil Tests")
+class HibernateUtilTest {
+
+    @Test
+    @DisplayName("SessionFactory should not be null")
+    public void testSessionFactoryInitialization() {
+        assertNotNull(HibernateUtil.getSessionFactory());
+    }
+
+    @Test
+    @DisplayName("SessionFactory should be reusable")
+    public void testSessionFactoryReusability() {
+        var factory1 = HibernateUtil.getSessionFactory();
+        var factory2 = HibernateUtil.getSessionFactory();
+
+        assertSame(factory1, factory2);
+    }
+
+    @Test
+    @DisplayName("Should be able to create a session")
+    public void testSessionCreation() {
+        var factory = HibernateUtil.getSessionFactory();
+        var session = factory.openSession();
+
+        assertNotNull(session);
+        session.close();
+    }
+
+    @Test
+    @DisplayName("SessionFactory should have configured entity classes")
+    public void testConfiguredEntities() {
+        var factory = HibernateUtil.getSessionFactory();
+        assertNotNull(factory.getMetamodel().entity(Location.class));
+        assertNotNull(factory.getMetamodel().entity(Sensor.class));
+        assertNotNull(factory.getMetamodel().entity(Measurement.class));
+    }
+}
+
+@DisplayName("Entity Relationship Tests")
+class EntityRelationshipTest {
+
+    private Location location;
+    private Sensor sensor;
+
+    @BeforeEach
+    public void setUp() {
+        location = new Location();
+        location.setId(1L);
+        location.setCity("Paris");
+        location.setCountry("FR");
+
+        sensor = new Sensor();
+        sensor.setId(101L);
+        sensor.setParameter("pm10");
+    }
+
+    @Test
+    @DisplayName("Location should have sensors")
+    public void testLocationHasSensors() {
+        List<Sensor> sensors = new ArrayList<>();
+        sensors.add(sensor);
+        location.setSensors(sensors);
+
+        assertEquals(1, location.getSensors().size());
+    }
+
+    @Test
+    @DisplayName("Sensor should belong to a location")
+    public void testSensorBelongsToLocation() {
+        sensor.setLocation(location);
+
+        assertEquals(location, sensor.getLocation());
+        assertEquals("Paris", sensor.getLocation().getCity());
+    }
+
+    @Test
+    @DisplayName("Sensor should have measurements")
+    public void testSensorHasMeasurements() {
+        List<Measurement> measurements = new ArrayList<>();
+
+        for (int i = 0; i < 5; i++) {
+            Measurement m = new Measurement();
+            m.setValue(25.0 + i);
+            m.setTimestamp(Instant.now());
+            m.setSensor(sensor);
+            measurements.add(m);
+        }
+
+        sensor.setMeasurements(measurements);
+
+        assertEquals(5, sensor.getMeasurements().size());
+    }
+
+    @Test
+    @DisplayName("Complete object graph should work")
+    public void testCompleteObjectGraph() {
+        // create location
+        location.setId(1L);
+        location.setCity("Paris");
+
+        // create sensor
+        sensor.setId(101L);
+        sensor.setLocation(location);
+
+        // create measurements
+        List<Measurement> measurements = new ArrayList<>();
+        Measurement m = new Measurement();
+        m.setValue(28.5);
+        m.setTimestamp(Instant.now());
+        m.setSensor(sensor);
+        measurements.add(m);
+
+        sensor.setMeasurements(measurements);
+
+        // verify complete graph
+        assertEquals("Paris", sensor.getLocation().getCity());
+        assertEquals(1, sensor.getMeasurements().size());
+        assertEquals(28.5, sensor.getMeasurements().get(0).getValue());
+    }
+}
+
+@DisplayName("Data Validation Tests")
+class DataValidationTest {
+
+    @Test
+    @DisplayName("Location coordinates should be valid")
+    public void testLocationCoordinatesValidation() {
+        Location location = new Location();
+        location.setLatitude(48.8566);
+        location.setLongitude(2.3522);
+
+        assertTrue(location.getLatitude() >= -90 && location.getLatitude() <= 90);
+        assertTrue(location.getLongitude() >= -180 && location.getLongitude() <= 180);
+    }
+
+    @Test
+    @DisplayName("Measurement value should be numeric")
+    public void testMeasurementValueType() {
+        Measurement m = new Measurement();
+        m.setValue(25.5);
+
+        assertNotNull(m.getValue());
+        assertTrue(m.getValue() instanceof Double);
+    }
+
+    @Test
+    @DisplayName("Timestamp should be Instant type")
+    public void testMeasurementTimestampType() {
+        Measurement m = new Measurement();
+        Instant now = Instant.now();
+        m.setTimestamp(now);
+
+        assertNotNull(m.getTimestamp());
+        assertTrue(m.getTimestamp() instanceof Instant);
+    }
+
+    @Test
+    @DisplayName("Sensor parameter should not be null")
+    public void testSensorParameterNotNull() {
+        Sensor sensor = new Sensor();
+        sensor.setParameter("pm10");
+
+        assertNotNull(sensor.getParameter());
     }
 }

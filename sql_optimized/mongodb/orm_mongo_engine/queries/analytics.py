@@ -1,6 +1,6 @@
-from models.measurement import Measurement
-from models.sensor import Sensor
-from models.location import Location
+from mongodb.orm_mongo_engine.models.measurement import Measurement
+from mongodb.orm_mongo_engine.models.sensor import Sensor
+from mongodb.orm_mongo_engine.models.location import Location
 import pandas as pd
 
 def top10_locations_pm10():

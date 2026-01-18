@@ -3,5 +3,8 @@ pandas
 sqlalchemy
 psycopg2-binary
 python-dotenv
+pytest
+matplotlib
+seaborn
 
 #pip install -r requirements.txt

@@ -1,6 +1,6 @@
 import requests
 import time
-from config.settings import OPENAQ_BASE_URL, OPENAQ_API_KEY, LIMIT
+from mongodb.ingestion.config.settings import OPENAQ_BASE_URL, OPENAQ_API_KEY, LIMIT
 
 HEADERS = {"X-API-Key": OPENAQ_API_KEY}
 

@@ -3,9 +3,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from api.openaq_api import fetch_locations, fetch_sensors, fetch_measurements
-from transform.normalizer import normalize_measurements
-from database.mongo_writer import write_locations, write_sensors, write_measurements
+from mongodb.ingestion.api.openaq_api import fetch_locations, fetch_sensors, fetch_measurements
+from mongodb.ingestion.transform.normalizer import normalize_measurements
+from mongodb.ingestion.database.mongo_writer import write_locations, write_sensors, write_measurements
 from benchmark.timer import timer
 
 

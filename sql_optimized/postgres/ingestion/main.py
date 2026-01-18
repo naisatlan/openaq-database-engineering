@@ -1,6 +1,6 @@
-from api.openaq_api import fetch_locations, fetch_sensors, fetch_measurements
-from transform.normalizer import normalize_measurements
-from database.postgres_writer import write_locations, write_sensors, write_measurements
+from postgres.ingestion.api.openaq_api import fetch_locations, fetch_sensors, fetch_measurements
+from postgres.ingestion.transform.normalizer import normalize_measurements
+from postgres.ingestion.database.postgres_writer import write_locations, write_sensors, write_measurements
 from benchmark.timer import timer
 
 

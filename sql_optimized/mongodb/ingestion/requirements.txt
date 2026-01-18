@@ -2,3 +2,9 @@ pymongo
 pandas
 requests
 python-dotenv
+pytest
+matplotlib
+sqlalchemy
+seaborn
+mongoengine
+psychopg2-binary

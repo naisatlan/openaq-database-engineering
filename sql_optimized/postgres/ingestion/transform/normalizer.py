@@ -14,7 +14,7 @@ def normalize_measurements(raw_measurements):
     elif "datetime" in df.columns:
         time_col = "datetime"
     else:
-        print("⚠️ Aucun champ temporel reconnu")
+        print("Aucun champ temporel reconnu")
         print("Colonnes disponibles :", df.columns.tolist())
         return pd.DataFrame()
 
