@@ -7,7 +7,11 @@ __pycache__/
 .DS_Store
 Thumbs.db
 .vscode/
-env/
+.env
+.env.local
+.env.development
+.env.production
+*.env
 
 #Java
 .gradle
