@@ -63,6 +63,7 @@ Ce dataset est optimisé pour :
 ## **Structure du projet**
 Le projet est organisé en quatre modules indépendants, correspondant à deux technologies (Postgres / Mongo) et deux cas d’usage (SQL-optimisé / NoSQL-optimisé) :
 
+```bash
 openaq_database_engineering/
 |
 ├──sql_optimized/
@@ -87,7 +88,7 @@ openaq_database_engineering/
 |    ├── ingestion/ # Pipeline Python d’ingestion vers MongoDB
 |    ├── orm_mongo_engine/ # Requêtes analytiques avec MongoEngine
 |    └── visualization/ # Graphiques Python simples
-
+```
 ---
 
 ## **Lancer le projet**
